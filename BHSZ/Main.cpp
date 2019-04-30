@@ -13,9 +13,9 @@ void GetDouble(char word[], double *data){
 
 //计算闭合水准
 void Count(){
+	int i;
 	int sta;//测站数
 	GetInt("请输入测站数:",&sta);
-	int i;
 	double start = 0;//起始点高程
 	double dh[10] = {0};//高差
 	double dd[10] = {0};//距离
@@ -39,28 +39,40 @@ void Count(){
 	for(i=0;i<sta;i++){
 		Eh += dh[i];
 	}
-	int Ch = (int)Eh*1000;//闭合差
+	int Ch = (int)(Eh*1000);//闭合差
 	double Ed = 0;//总长度
 	for(i=0;i<sta;i++){
 		Ed += dd[i];
 	}
-	printf("闭合差为%dmm，允许值为%dmm。", (int)Ch, (int)40*sqrt(Ed));
+	printf("闭合差为%dmm，允许值为%.2fmm，", (int)Ch, 40*sqrt(Ed));
 	if(Ch > 24) {
-		printf("超限");
+		printf("该路线的观测不满足要求。\n");
 		return;//超限
+	}else{
+		printf("该路线的观测满足要求。\n");
 	}
 	//计算改正数
 	gc[0] = start;
 	for(i=0;i<sta;i++){
-		gz[i] = (int)-Ch * dd[i] / Ed;//计算改正数
-		ddh[i] = dh[i] + gz[i]/1000;//计算改正后高差
+		gz[i] = (int)(-Ch * dd[i] / Ed);//计算改正数
+		ddh[i] = dh[i] + (double)gz[i]/1000;//计算改正后高差
 		gc[i+1] = gc[i] + ddh[i];//计算高程
 	}
-
-	for(i=0;i<sta+1;i++){
-		printf("\n\n");
-		printf("%.4f,",gc[i]);
+	
+	//输出
+	printf("\n改正数：\n");
+	for(i=0;i<sta;i++){
+		printf("%d,",gz[i]);
 	}
+	printf("\n改正后高差：\n");
+	for(i=0;i<sta;i++){
+		printf("%.3f,",ddh[i]);
+	}
+	printf("\n高程：\n");
+	for(i=0;i<sta+1;i++){
+		printf("%.3f,",gc[i]);
+	}
+	printf("\n");
 }
 
 int main(){

@@ -55,6 +55,8 @@ void printDEG(char word[], int deg[]){
 
 //角度加法
 void AngAdd(int res[], int a[], int b[]){
+	GetDeg(GetSec(a) + GetSec(b), res);
+	/*
 	int i;
 	for(i=0;i<3;i++){
 		res[i] = a[i] + b[i];
@@ -65,6 +67,12 @@ void AngAdd(int res[], int a[], int b[]){
 			res[i-1]++;
 		}
 	}
+	*/
+}
+
+//角度减法
+void AngMin(int res[], int a[], int b[]){
+	GetDeg(GetSec(a) - GetSec(b), res);
 }
 
 //计算闭合导线

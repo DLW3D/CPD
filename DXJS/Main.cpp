@@ -53,6 +53,20 @@ void printDEG(char word[], int deg[]){
 	printf("%s:(%d,%d,%d)\n",word,deg[0],deg[1],deg[2]);
 }
 
+//角度加法
+void AngAdd(int res[], int a[], int b[]){
+	int i;
+	for(i=0;i<3;i++){
+		res[i] = a[i] + b[i];
+	}
+	for(i=2;i>0;i--){
+		if(res[i]>60){
+			res[i] =- 60;
+			res[i-1]++;
+		}
+	}
+}
+
 //计算闭合导线
 void Count(){
 	int i;
@@ -68,6 +82,9 @@ void Count(){
 	double gzzl[10][2];//改正后增量
 	double bc[11];//边长
 	
+	double dxcd = 0;//导线长度
+	double int[3] = 0;//角度闭合差
+	
 	//输入数据
 	GetInt("测站数(坐标数)：", &sta);
 	GetInt("左角+1，右角-1：", &lor);
@@ -75,6 +92,7 @@ void Count(){
 	printf("请输入2个已知角:\n");
 	GetDMS("", &fwj[0]);
 	GetDMS("", &fwj[sta-1]);
+
 
 	printf("请输入%d个观测角:\n",sta-1);
 	for(i=0;i<sta-1;i++){
@@ -88,7 +106,9 @@ void Count(){
 	printf("请输入%d个边长:\n",sta-2);
 	for(i=1;i<sta-1;i++){
 		GetDouble("", &bc[i]);
+		dxcd += bc[i];
 	}
+
 
 }
 

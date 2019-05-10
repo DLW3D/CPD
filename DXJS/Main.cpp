@@ -2,6 +2,8 @@
 #include <iostream.h>
 #include <math.h>
 
+#define PI 3.1415926535
+
 //输入度分秒
 void GetDMS(char word[], int angle[]){
 	printf("%s",word);
@@ -75,16 +77,48 @@ void AngAdd(int res[], int a[], int b[]){
 void AngMin(int res[], int a[], int b[]){
 	GetDeg(GetSec(a) - GetSec(b), res);
 }
+//////////////////////////////////////////////////////////////////
+
+//度分秒转弧度
+double DMSToRed(int angle[]){
+	return (angle[0] + angle[1]/60 + angle[2]/3600) * PI / 180;
+}
+
+//弧度转度分秒
+void RedToDMS(double red, int angle[]){
+	double sec = red * 180 * 3600 / PI;
+	angle[0] = sec/3600;
+	angle[1] = (sec%3600)/60;
+	angle[2] = (sec%60);
+}
+
+//输入度分秒
+double ScanDMSToRed(char word[]){
+	int angle[3]；
+	printf("%s",word);
+	scanf("%d,%d,%d",&angle[0],&angle[1],&angle[2]);
+	//检查输入
+	if(angle[0]>=360){
+		angle[0] -= 360;
+	}else if(angle[0]<0){
+		angle[0] += 360;
+	}
+	if(angle[2]>=60 || angle[2]<0 || angle[1]>=60 || angle[1]<0){
+		printf("输入错误，请重新输入\n");
+		GetDMS(word, angle);
+	}
+	return DMSToRed(word);
+}
 
 //计算闭合导线
 void Count(){
 	int i;
 	int sta;//测站数(坐标数)max:10
 	int lor;//左角或右角
-	int gcj[10][3];//观测角
-	int jdgz[10][3];//角度改正值
-	int gzj[10][3];//改正后角度
-	int fwj[10][3];//方位角
+	double gcj[10];//观测角
+	double jdgz[10];//角度改正值
+	double gzj[10];//改正后角度
+	double fwj[10];//方位角
 	double zb[11][2];//坐标
 	double zbzl[10][2];//坐标增量
 	double zbgz[10][2];//坐标改正
@@ -99,13 +133,13 @@ void Count(){
 	GetInt("左角+1，右角-1：", lor);
 
 	printf("请输入2个已知角:\n");
-	GetDMS("", fwj[0]);
-	GetDMS("", fwj[sta-1]);
+	ScanDMSToRed("", fwj[0]);
+	ScanDMSToRed("", fwj[sta-1]);
 
 
 	printf("请输入%d个观测角:\n",sta-1);
 	for(i=1;i<sta;i++){
-		GetDMS("", gcj[i]);
+		ScanDMSToRed("", gcj[i]);
 	}
 
 	printf("请输入4个已知坐标:\n");

@@ -6,23 +6,27 @@
 --------------------Configuration: Main - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSPC41A.tmp" with contents
+Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSP126E.tmp" with contents
 [
 /nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/Main.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"C:\Users\s505\Desktop\CPD\BHSZ\Main.cpp"
+"C:\Users\s505\Desktop\CPD\DXJS\Main.cpp"
 ]
-Creating command line "cl.exe @C:\Users\s505\AppData\Local\Temp\RSPC41A.tmp" 
-Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSPC41B.tmp" with contents
+Creating command line "cl.exe @C:\Users\s505\AppData\Local\Temp\RSP126E.tmp" 
+Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSP126F.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/Main.pdb" /debug /machine:I386 /out:"Debug/Main.exe" /pdbtype:sept 
 .\Debug\Main.obj
 ]
-Creating command line "link.exe @C:\Users\s505\AppData\Local\Temp\RSPC41B.tmp"
+Creating command line "link.exe @C:\Users\s505\AppData\Local\Temp\RSP126F.tmp"
 <h3>Output Window</h3>
 Compiling...
 Main.cpp
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(89) : warning C4101: 'zbzl' : unreferenced local variable
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(90) : warning C4101: 'zbgz' : unreferenced local variable
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(85) : warning C4101: 'jdgz' : unreferenced local variable
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(91) : warning C4101: 'gzzl' : unreferenced local variable
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(86) : warning C4101: 'gzj' : unreferenced local variable
 Linking...
-LINK : LNK6004: Debug/Main.exe not found or not built by the last incremental link; performing full link
 
 
 

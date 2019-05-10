@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream.h>
 #include <math.h>
 
 //输入度分秒
@@ -22,14 +23,14 @@ void GetXY(char word[], double XY[]){
 	scanf("%lf,%lf",&XY[0],&XY[1]);
 }
 //输入整数
-void GetInt(char word[], int *data){
+void GetInt(char word[], int &data){
 	printf("%s",word);
-	scanf("%d",data);
+	scanf("%d",&data);
 }
 //输入浮点数
-void GetDouble(char word[], double *data){
+void GetDouble(char word[], double &data){
 	printf("%s",word);
-	scanf("%lf",data);
+	scanf("%lf",&data);
 }
 //度分秒转秒
 int GetSec(int deg[]){
@@ -38,11 +39,11 @@ int GetSec(int deg[]){
 //秒转度分秒
 void GetDeg(int sec, int ret[]){
 	//检查范围
-	if(sec >= 360*60*60){
-		sec -= 360*60*60;
-	}else if(sec < 0){
-		sec += 360*60*60;
-	}
+	//if(sec >= 360*60*60){
+	//	sec -= 360*60*60;
+	//}else if(sec < 0){
+	//	sec += 360*60*60;
+	//}
 	//转换
 	ret[0] = sec/3600;
 	ret[1] = (sec%3600)/60;
@@ -78,44 +79,60 @@ void AngMin(int res[], int a[], int b[]){
 //计算闭合导线
 void Count(){
 	int i;
-	int sta;//测站数(坐标数)
+	int sta;//测站数(坐标数)max:10
 	int lor;//左角或右角
 	int gcj[10][3];//观测角
 	int jdgz[10][3];//角度改正值
 	int gzj[10][3];//改正后角度
 	int fwj[10][3];//方位角
-	double zb[10][2];//坐标
+	double zb[11][2];//坐标
 	double zbzl[10][2];//坐标增量
 	double zbgz[10][2];//坐标改正
 	double gzzl[10][2];//改正后增量
-	double bc[11];//边长
+	double bc[10];//边长
 	
 	double dxcd = 0;//导线长度
-	double int[3] = 0;//角度闭合差
+	int bhc[3] = {0,0,0};//角度闭合差
 	
 	//输入数据
-	GetInt("测站数(坐标数)：", &sta);
-	GetInt("左角+1，右角-1：", &lor);
+	GetInt("测站数(坐标数)：", sta);
+	GetInt("左角+1，右角-1：", lor);
 
 	printf("请输入2个已知角:\n");
-	GetDMS("", &fwj[0]);
-	GetDMS("", &fwj[sta-1]);
+	GetDMS("", fwj[0]);
+	GetDMS("", fwj[sta-1]);
 
 
 	printf("请输入%d个观测角:\n",sta-1);
-	for(i=0;i<sta-1;i++){
-		GetDMS("", &gcj[i]);
+	for(i=1;i<sta;i++){
+		GetDMS("", gcj[i]);
 	}
 
-	printf("请输入2个已知坐标:\n");
-	GetXY("", &zb[0]);
-	GetXY("", &zb[sta-2]);
+	printf("请输入4个已知坐标:\n");
+	GetXY("B:", zb[0]);
+	GetXY("A:", zb[1]);
+	GetXY("C:", zb[sta-1]);
+	GetXY("D:", zb[sta]);
 
 	printf("请输入%d个边长:\n",sta-2);
 	for(i=1;i<sta-1;i++){
-		GetDouble("", &bc[i]);
+		GetDouble("", bc[i]);
 		dxcd += bc[i];
 	}
+
+	cout << "边长和：" << dxcd << endl;
+
+	//计算闭合差
+	GetDeg(GetSec(fwj[0]),bhc);//意思是bhc = fwj[0];
+	for (i = 1; i < sta; i++)
+	{
+		AngAdd(bhc, bhc, gcj[i]);
+	}
+	int temi[3];
+	GetDeg(180*60*60*(sta-1), temi);
+	AngMin(bhc, bhc, temi);
+	AngMin(bhc, bhc, fwj[sta-1])
+	printDEG("闭合差",bhc);
 
 
 }

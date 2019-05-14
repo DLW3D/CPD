@@ -2,7 +2,12 @@
 #include <iostream.h>
 #include <math.h>
 
-#define PI 3.1415926535
+#define PI 3.141592653589793238462643383279502884197169399375105820974944 
+
+//四舍五入到整数
+int Round(float num){
+	return (int)(num+0.5);
+}
 
 //输入度分秒
 void GetDMS(char word[], int angle[]){
@@ -35,11 +40,11 @@ void GetDouble(char word[], double &data){
 	scanf("%lf",&data);
 }
 //度分秒转秒
-int GetSec(int deg[]){
+int DMSToSec(int deg[]){
 	return deg[2] + deg[1]*60 + deg[0]*3600;
 }
 //秒转度分秒
-void GetDeg(int sec, int ret[]){
+void SecToDMS(int sec, int ret[]){
 	//检查范围
 	//if(sec >= 360*60*60){
 	//	sec -= 360*60*60;
@@ -51,14 +56,10 @@ void GetDeg(int sec, int ret[]){
 	ret[1] = (sec%3600)/60;
 	ret[2] = (sec%60);
 }
-//输出度分秒
-void printDEG(char word[], int deg[]){
-	printf("%s:(%d,%d,%d)\n",word,deg[0],deg[1],deg[2]);
-}
 
 //角度加法
 void AngAdd(int res[], int a[], int b[]){
-	GetDeg(GetSec(a) + GetSec(b), res);
+	SecToDMS(DMSToSec(a) + DMSToSec(b), res);
 	/*
 	int i;
 	for(i=0;i<3;i++){
@@ -75,26 +76,26 @@ void AngAdd(int res[], int a[], int b[]){
 
 //角度减法
 void AngMin(int res[], int a[], int b[]){
-	GetDeg(GetSec(a) - GetSec(b), res);
+	SecToDMS(DMSToSec(a) - DMSToSec(b), res);
 }
 //////////////////////////////////////////////////////////////////
 
 //度分秒转弧度
 double DMSToRed(int angle[]){
-	return (angle[0] + angle[1]/60 + angle[2]/3600) * PI / 180;
+	return (angle[0]<0?-1:1) * (abs(angle[0]*3600) + angle[1]*60 + angle[2]) * PI / 180 / 3600;
 }
 
 //弧度转度分秒
 void RedToDMS(double red, int angle[]){
-	double sec = red * 180 * 3600 / PI;
+	int sec = red * 180 * 3600 / PI;
 	angle[0] = sec/3600;
 	angle[1] = (sec%3600)/60;
-	angle[2] = (sec%60);
+	angle[2] = Round(sec%60);
 }
 
 //输入度分秒
-double ScanDMSToRed(char word[]){
-	int angle[3]；
+double GetDMSToRed(char word[]){
+	int angle[3];
 	printf("%s",word);
 	scanf("%d,%d,%d",&angle[0],&angle[1],&angle[2]);
 	//检查输入
@@ -107,7 +108,19 @@ double ScanDMSToRed(char word[]){
 		printf("输入错误，请重新输入\n");
 		GetDMS(word, angle);
 	}
-	return DMSToRed(word);
+	return DMSToRed(angle);
+}
+
+//输出度分秒
+void printDMS(char word[], int angle[]){
+	printf("%s:(%d,%d,%d)\n",word,angle[0],angle[1],angle[2]);
+}
+
+//输出度分秒
+void printRedToDMS(char word[], float red){
+	int angle[3];
+	RedToDMS(red, angle);
+	printDMS(word, angle);
 }
 
 //计算闭合导线
@@ -126,20 +139,20 @@ void Count(){
 	double bc[10];//边长
 	
 	double dxcd = 0;//导线长度
-	int bhc[3] = {0,0,0};//角度闭合差
+	double bhc;//角度闭合差
 	
 	//输入数据
 	GetInt("测站数(坐标数)：", sta);
 	GetInt("左角+1，右角-1：", lor);
 
 	printf("请输入2个已知角:\n");
-	ScanDMSToRed("", fwj[0]);
-	ScanDMSToRed("", fwj[sta-1]);
+	fwj[0] = GetDMSToRed("");
+	fwj[sta-1] = GetDMSToRed("");
 
 
 	printf("请输入%d个观测角:\n",sta-1);
 	for(i=1;i<sta;i++){
-		ScanDMSToRed("", gcj[i]);
+		gcj[i] = GetDMSToRed("");
 	}
 
 	printf("请输入4个已知坐标:\n");
@@ -157,16 +170,14 @@ void Count(){
 	cout << "边长和：" << dxcd << endl;
 
 	//计算闭合差
-	GetDeg(GetSec(fwj[0]),bhc);//意思是bhc = fwj[0];
+	bhc = fwj[0];
 	for (i = 1; i < sta; i++)
 	{
-		AngAdd(bhc, bhc, gcj[i]);
+		bhc += gcj[i];
+		bhc -= PI;
 	}
-	int temi[3];
-	GetDeg(180*60*60*(sta-1), temi);
-	AngMin(bhc, bhc, temi);
-	AngMin(bhc, bhc, fwj[sta-1])
-	printDEG("闭合差",bhc);
+	bhc -= fwj[sta-1];
+	printRedToDMS("闭合差",bhc);
 
 
 }

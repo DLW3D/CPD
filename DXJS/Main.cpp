@@ -87,10 +87,15 @@ double DMSToRed(int angle[]){
 
 //弧度转度分秒
 void RedToDMS(double red, int angle[]){
-	int sec = red * 180 * 3600 / PI;
+	int sec = Round(red * 180 * 3600 / PI);
 	angle[0] = sec/3600;
 	angle[1] = (sec%3600)/60;
-	angle[2] = Round(sec%60);
+	angle[2] = sec%60;
+
+	//double sec = red * 180 * 3600 / PI;
+	//angle[0] = sec/3600;
+	//angle[1] = (sec-angle[0]*3600)/60;
+	//angle[2] = Round(sec-angle[0]*3600-angle[1]*60);
 }
 
 //输入度分秒
@@ -113,14 +118,20 @@ double GetDMSToRed(char word[]){
 
 //输出度分秒
 void printDMS(char word[], int angle[]){
-	printf("%s:(%d,%d,%d)\n",word,angle[0],angle[1],angle[2]);
+	printf("%s(%d,%d,%d)\n",word,angle[0],angle[1],angle[2]);
 }
 
 //输出度分秒
-void printRedToDMS(char word[], float red){
+void printRedToDMS(char word[], double red){
 	int angle[3];
 	RedToDMS(red, angle);
 	printDMS(word, angle);
+}
+
+void refreshDegWithDMS(double &red){
+	int angle[3];
+	RedToDMS(red, angle);
+	red = DMSToRed(angle);
 }
 
 //计算闭合导线
@@ -148,11 +159,17 @@ void Count(){
 	printf("请输入2个已知角:\n");
 	fwj[0] = GetDMSToRed("");
 	fwj[sta-1] = GetDMSToRed("");
-
+	//检查输入
+	printRedToDMS("",fwj[0]);
+	printRedToDMS("",fwj[sta-1]);
 
 	printf("请输入%d个观测角:\n",sta-1);
 	for(i=1;i<sta;i++){
 		gcj[i] = GetDMSToRed("");
+	}
+	//检查输入
+	for(i=1;i<sta;i++){
+		printRedToDMS("",gcj[i]);
 	}
 
 	printf("请输入4个已知坐标:\n");
@@ -170,20 +187,23 @@ void Count(){
 	cout << "边长和：" << dxcd << endl;
 
 	//计算闭合差
-	bhc = fwj[0];
+	bhc = fwj[0] - fwj[sta-1];
 	for (i = 1; i < sta; i++)
 	{
-		bhc += gcj[i];
-		bhc -= PI;
+		printRedToDMS("", bhc);
+		refreshDegWithDMS(bhc);
+		bhc += gcj[i] - PI;
 	}
-	bhc -= fwj[sta-1];
 	printRedToDMS("闭合差",bhc);
 
 
 }
 
 int main(){
-	Count();
+	//Count();
+	int a1[3] = {50,32,0};
+	int a2[3] = {129,27,24};
+	printRedToDMS("",DMSToRed(a1)+DMSToRed(a2)-PI);//should be -36
 	return 0;
 }
 

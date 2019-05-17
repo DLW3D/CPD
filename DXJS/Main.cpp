@@ -6,7 +6,7 @@
 
 //四舍五入到整数
 int Round(float num){
-	return (int)(num+0.5);
+	return (int)(num>0 ? num+0.5: num-0.5);
 }
 
 //输入度分秒
@@ -87,7 +87,8 @@ double DMSToRed(int angle[]){
 
 //弧度转度分秒
 void RedToDMS(double red, int angle[]){
-	int sec = Round(red * 180 * 3600 / PI);
+	double secd = red * 180 * 3600 / PI;
+	int sec = Round(secd);
 	angle[0] = sec/3600;
 	angle[1] = (sec%3600)/60;
 	angle[2] = sec%60;
@@ -128,10 +129,17 @@ void printRedToDMS(char word[], double red){
 	printDMS(word, angle);
 }
 
+//刷新使用角度刷新弧度
 void refreshDegWithDMS(double &red){
 	int angle[3];
 	RedToDMS(red, angle);
 	red = DMSToRed(angle);
+}
+
+//坐标正算
+void ZBZS(double zb[2], double bc, double fwj){
+	zb[0] = bc * cos(fwj);
+	zb[1] = bc * sin(fwj);
 }
 
 //计算闭合导线
@@ -151,7 +159,9 @@ void Count(){
 	
 	double dxcd = 0;//导线长度
 	double bhc;//角度闭合差
+	double bhcyxz;//角度闭合差允许值
 	
+	/*
 	//输入数据
 	GetInt("测站数(坐标数)：", sta);
 	GetInt("左角+1，右角-1：", lor);
@@ -160,17 +170,17 @@ void Count(){
 	fwj[0] = GetDMSToRed("");
 	fwj[sta-1] = GetDMSToRed("");
 	//检查输入
-	printRedToDMS("",fwj[0]);
-	printRedToDMS("",fwj[sta-1]);
+	//printRedToDMS("",fwj[0]);
+	//printRedToDMS("",fwj[sta-1]);
 
 	printf("请输入%d个观测角:\n",sta-1);
 	for(i=1;i<sta;i++){
 		gcj[i] = GetDMSToRed("");
 	}
 	//检查输入
-	for(i=1;i<sta;i++){
-		printRedToDMS("",gcj[i]);
-	}
+	//for(i=1;i<sta;i++){
+	//	printRedToDMS("",gcj[i]);
+	//}
 
 	printf("请输入4个已知坐标:\n");
 	GetXY("B:", zb[0]);
@@ -183,6 +193,23 @@ void Count(){
 		GetDouble("", bc[i]);
 		dxcd += bc[i];
 	}
+	*/
+
+	FILE *fp = NULL;//文件指针
+	char buff[255];//缓冲区
+	fp = fopen("C:\\Users\\s505\\Desktop\\CPD\\DXJS\\Debug\\test.txt", "r");
+
+	fgets(buff, 255, (FILE*)fp);
+	printf("1: %s\n", buff );
+	fgets(buff, 255, (FILE*)fp);
+	printf("1: %s\n", buff );
+	fgets(buff, 255, (FILE*)fp);
+	printf("1: %s\n", buff );
+	fgets(buff, 255, (FILE*)fp);
+	printf("1: %s\n", buff );
+	
+	fclose(fp);
+	//输入完毕
 
 	cout << "边长和：" << dxcd << endl;
 
@@ -194,16 +221,50 @@ void Count(){
 		refreshDegWithDMS(bhc);
 		bhc += gcj[i] - PI;
 	}
-	printRedToDMS("闭合差",bhc);
+	printRedToDMS("闭合差：",bhc);
+	int baseNum[] = {0,0,40};
+	bhcyxz = DMSToRed(baseNum)*sqrt(sta-1);
+	printRedToDMS("闭合差允许值：±",bhcyxz);
+	if(bhc > bhcyxz){
+		cout << "角度闭合差超限！" << endl;
+		//return 0;
+	}
+	
+	//进行角度改正
+	jdgz[0] = -bhc / (sta - 1);
+	//不考虑改正值不平均分配的情况。
+	for(i = 1; i < sta; i++){
+		gzj[i] = gcj[i] + jdgz[0];
+		fwj[i] = fwj[i-1] + gzj[i] - PI;
+	}
+	cout << "改正角：" << endl;
+	for(i=1;i<sta;i++){
+		printRedToDMS("",gzj[i]);
+	}
+	cout << "坐标方位角：" << endl;
+	for(i=0;i<sta;i++){
+		printRedToDMS("",fwj[i]);
+	}
+
+	for(i=1;i<sta-1;i++){
+		ZBZS(zbzl[i], bc[i], fwj[i]);
+		cout << "(" << zbzl[i][0] << "," << zbzl[i][1] << ")" << endl;
+	}
+	
 
 
 }
 
 int main(){
-	//Count();
+	Count();
+	/*
 	int a1[3] = {50,32,0};
 	int a2[3] = {129,27,24};
-	printRedToDMS("",DMSToRed(a1)+DMSToRed(a2)-PI);//should be -36
-	return 0;
+	double r1 = DMSToRed(a1);
+	double r2 = DMSToRed(a2);
+	double r3 = r1+r2-PI;
+	printRedToDMS("",r3);//should be -36
+	*/
+	  return 0;
 }
 

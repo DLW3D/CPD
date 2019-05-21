@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <iostream.h>
 #include <math.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define PI 3.141592653589793238462643383279502884197169399375105820974944 
 
@@ -142,6 +144,43 @@ void ZBZS(double zb[2], double bc, double fwj){
 	zb[1] = bc * sin(fwj);
 }
 
+//字符分割
+void strSplit(char str[], const char spl[], char **ret){
+	char *p; 
+	p = strtok(str, spl);
+	int i = 0;
+	while(p)
+	{
+		ret[i++] = p;
+		p = strtok(NULL, spl);  
+	}
+}
+
+//字符串转doubles
+void StrToDoubles(char str[], const char spl[], double num[10]){
+	char *ret[10] = {"","","","","","","","","",""};
+	strSplit(str,spl,ret);
+	int i = 0;
+	for(i=0;ret[i]!="";i++){
+		num[i] = atof(ret[i]);//char[]转double
+	}
+}
+
+//字符串转Reds
+void StrToReds(char str[], const char spl[], double num[10]){
+	char *ret[10] = {"","","","","","","","","",""};
+	char *cang[3] = {"","",""};
+	int ang[3];
+	strSplit(str,spl,ret);
+	for(int i=0;ret[i]!="";i++){
+		strSplit(ret[i],",",cang);
+		for(int j=0;j<3;j++){
+			ang[j] = atof(cang[j]);//char[]转double
+		}
+		num[i] = DMSToRed(ang);
+	}
+}
+
 //计算闭合导线
 void Count(){
 	int i;
@@ -197,19 +236,44 @@ void Count(){
 
 	FILE *fp = NULL;//文件指针
 	char buff[255];//缓冲区
+	double nbuf[10] = {0};//数组缓存
 	fp = fopen("C:\\Users\\s505\\Desktop\\CPD\\DXJS\\Debug\\test.txt", "r");
 
 	fgets(buff, 255, (FILE*)fp);
-	printf("1: %s\n", buff );
+	sta = atof(buff);
+	cout << "测站数:" << sta << endl; 
+
 	fgets(buff, 255, (FILE*)fp);
-	printf("1: %s\n", buff );
+	StrToReds(buff, " ", nbuf);
+	fwj[0] = nbuf[0];
+	fwj[sta-1] = nbuf[1];
+	cout << "已知角:" << endl;
+	printRedToDMS("",fwj[0]);
+	printRedToDMS("",fwj[sta-1]);
+
 	fgets(buff, 255, (FILE*)fp);
-	printf("1: %s\n", buff );
+	StrToReds(buff, " ", nbuf);
+	for(i=1;i<sta;i++){
+		gcj[i] = nbuf[i-1];
+	}
+	cout << "观测角:" << endl;
+	for(i=1;i<sta;i++){
+		printRedToDMS("", gcj[i]);
+	}
+
 	fgets(buff, 255, (FILE*)fp);
-	printf("1: %s\n", buff );
-	
+	StrToDoubles(buff, " ", nbuf);
+	for(i=1;i<sta-1;i++){
+		bc[i] = nbuf[i-1];
+		dxcd += bc[i];
+	}
+	cout << "边长:" << endl;
+	for(i=1;i<sta-1;i++){
+		cout << bc[i] << endl;
+	}
+
 	fclose(fp);
-	//输入完毕
+	//导入完毕
 
 	cout << "边长和：" << dxcd << endl;
 

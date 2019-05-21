@@ -181,6 +181,21 @@ void StrToReds(char str[], const char spl[], double num[10]){
 	}
 }
 
+//字符串转x,y
+void StrToXYs(char str[], const char spl[], double num[11][2]){
+	char *ret[10] = {"","","","","","","","","",""};
+	char *cang[2] = {"",""};
+	double xy[2];
+	strSplit(str,spl,ret);//空格分割
+	for(int i=0;ret[i]!="";i++){
+		strSplit(ret[i],",",cang);//二次分割
+		for(int j=0;j<2;j++){
+			xy[j] = atof(cang[j]);//char[]转double
+		}
+		memcpy(num[i],xy,sizeof(xy));
+	}
+}
+
 //计算闭合导线
 void Count(){
 	int i;
@@ -271,6 +286,14 @@ void Count(){
 	for(i=1;i<sta-1;i++){
 		cout << bc[i] << endl;
 	}
+
+	fgets(buff, 255, (FILE*)fp);
+	StrToXYs(buff, " ", zb);
+	memcpy(zb[sta-1],zb[1],sizeof(zb[1]));//memcpy(a,b,sizeof(b));//b的元素复制给a
+	memcpy(zb[1],zb[0],sizeof(zb[0]));
+	cout << "坐标:" << endl;
+	cout << "(" << zb[1][0] << "," << zb[1][1] << ")" << endl;
+	cout << "(" << zb[sta-1][0] << "," << zb[sta-1][1] << ")" << endl;
 
 	fclose(fp);
 	//导入完毕

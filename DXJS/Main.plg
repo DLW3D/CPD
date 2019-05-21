@@ -6,28 +6,27 @@
 --------------------Configuration: Main - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSP3565.tmp" with contents
+Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSP15EC.tmp" with contents
 [
 /nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/Main.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
 "C:\Users\s505\Desktop\CPD\DXJS\Main.cpp"
 ]
-Creating command line "cl.exe @C:\Users\s505\AppData\Local\Temp\RSP3565.tmp" 
-Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSP3566.tmp" with contents
+Creating command line "cl.exe @C:\Users\s505\AppData\Local\Temp\RSP15EC.tmp" 
+Creating temporary file "C:\Users\s505\AppData\Local\Temp\RSP15ED.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/Main.pdb" /debug /machine:I386 /out:"Debug/Main.exe" /pdbtype:sept 
 .\Debug\Main.obj
 ]
-Creating command line "link.exe @C:\Users\s505\AppData\Local\Temp\RSP3566.tmp"
+Creating command line "link.exe @C:\Users\s505\AppData\Local\Temp\RSP15ED.tmp"
 <h3>Output Window</h3>
 Compiling...
 Main.cpp
 C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(93) : warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
 C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(178) : warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(243) : warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(193) : warning C4101: 'zb' : unreferenced local variable
-C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(195) : warning C4101: 'zbgz' : unreferenced local variable
-C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(196) : warning C4101: 'gzzl' : unreferenced local variable
-C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(188) : warning C4101: 'lor' : unreferenced local variable
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(258) : warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(210) : warning C4101: 'zbgz' : unreferenced local variable
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(211) : warning C4101: 'gzzl' : unreferenced local variable
+C:\Users\s505\Desktop\CPD\DXJS\Main.cpp(203) : warning C4101: 'lor' : unreferenced local variable
 Linking...
 Creating command line "bscmake.exe /nologo /o"Debug/Main.bsc"  .\Debug\Main.sbr"
 Creating browse info file...

@@ -196,9 +196,18 @@ void StrToXYs(char str[], const char spl[], double num[11][2]){
 	}
 }
 
+void printXY(char str[], double zb[2]){
+	cout << str << "(" << zb[0] << "," << zb[1] << ")" << endl;
+}
+
+double Modulo(double zb[2]){
+	return sqrt(zb[0]*zb[0] + zb[1]*zb[1]);
+}
+
 //计算闭合导线
 void Count(){
 	int i;
+	int j;
 	int sta;//测站数(坐标数)max:10
 	int lor;//左角或右角
 	double gcj[10];//观测角
@@ -214,6 +223,8 @@ void Count(){
 	double dxcd = 0;//导线长度
 	double bhc;//角度闭合差
 	double bhcyxz;//角度闭合差允许值
+	double qcbhc[2];//导线全长闭合差
+	double qcbhcyxz[2];//导线全长闭合差允许值
 	
 	/*
 	//输入数据
@@ -296,15 +307,16 @@ void Count(){
 	cout << "(" << zb[sta-1][0] << "," << zb[sta-1][1] << ")" << endl;
 
 	fclose(fp);
+	cout << "导入完毕！" << endl << endl;
 	//导入完毕
 
 	cout << "边长和：" << dxcd << endl;
 
-	//计算闭合差
+	//计算角度闭合差
 	bhc = fwj[0] - fwj[sta-1];
 	for (i = 1; i < sta; i++)
 	{
-		printRedToDMS("", bhc);
+		//printRedToDMS("", bhc);//中间步骤检查
 		refreshDegWithDMS(bhc);
 		bhc += gcj[i] - PI;
 	}
@@ -315,7 +327,7 @@ void Count(){
 	if(bhc > bhcyxz){
 		cout << "角度闭合差超限！" << endl;
 		//return 0;
-	}
+	}else cout << "角度闭合差在限差范围内√" << endl;
 	
 	//进行角度改正
 	jdgz[0] = -bhc / (sta - 1);
@@ -324,19 +336,24 @@ void Count(){
 		gzj[i] = gcj[i] + jdgz[0];
 		fwj[i] = fwj[i-1] + gzj[i] - PI;
 	}
-	cout << "改正角：" << endl;
+	cout << endl << "改正角：" << endl;
 	for(i=1;i<sta;i++){
 		printRedToDMS("",gzj[i]);
 	}
-	cout << "坐标方位角：" << endl;
+	cout << endl << "坐标方位角：" << endl;
 	for(i=0;i<sta;i++){
 		printRedToDMS("",fwj[i]);
 	}
-
+	//计算导线全长闭合差
+	for(j=0;j<2;j++) qcbhc[j] = zb[1][j] - zb[sta-1][j];
+	cout << endl << "坐标增量：" << endl;
 	for(i=1;i<sta-1;i++){
-		ZBZS(zbzl[i], bc[i], fwj[i]);
+		ZBZS(zbzl[i], bc[i], fwj[i]);//计算坐标增量
 		cout << "(" << zbzl[i][0] << "," << zbzl[i][1] << ")" << endl;
+		for(j=0;j<2;j++) qcbhc[j] += zbzl[i][j];//计算闭合差
 	}
+	printXY("导线闭合差(fx,fy):", qcbhc);
+	cout << "导线全长闭合差f：" << Modulo(qcbhc) << endl;
 	
 
 

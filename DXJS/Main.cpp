@@ -360,7 +360,13 @@ void Count(){
 		for(j=0;j<2;j++) qcbhc[j] += zbzl[i][j];//计算闭合差
 	}
 	printXY("导线闭合差(fx,fy):", qcbhc);
-	cout << "导线全长闭合差f：" << Modulo(qcbhc) << endl;
+	cout << "导线全长闭合差f=" << Round2(Modulo(qcbhc)) << endl;
+	cout << "导线相对闭合差K=" << "1/" << dxcd/Round2(Modulo(qcbhc)) << endl;
+	cout << "允许相对闭合差K允=" << "1/2000" << endl;
+	if(dxcd/Round2(Modulo(qcbhc)) < 2000){
+		cout << "相对闭合差超限！" << endl;
+		//return 0;
+	}else cout << "相对闭合差在限差范围内√" << endl;
 	
 	//进行坐标改正
 	cout << endl << "坐标增量改正：" << endl;

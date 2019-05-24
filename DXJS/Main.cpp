@@ -232,7 +232,7 @@ void Count(){
 	double qcbhcyxz[2];//导线全长闭合差允许值
 	
 	/*
-	//输入数据
+	//手动输入数据
 	GetInt("测站数(坐标数)：", sta);
 	GetInt("左角+1，右角-1：", lor);
 
@@ -268,7 +268,7 @@ void Count(){
 	FILE *fp = NULL;//文件指针
 	char buff[255];//缓冲区
 	double nbuf[10] = {0};//数组缓存
-	fp = fopen("C:\\Users\\s505\\Desktop\\CPD\\DXJS\\Debug\\test.txt", "r");
+	fp = fopen("data.txt", "r");
 
 	fgets(buff, 255, (FILE*)fp);
 	sta = atof(buff);
@@ -315,7 +315,7 @@ void Count(){
 	cout << "导入完毕！" << endl << endl;
 	//导入完毕
 
-	cout << "边长和：" << dxcd << endl;
+	cout << "边长和=" << dxcd << endl;
 
 	//计算角度闭合差
 	bhc = fwj[0] - fwj[sta-1];
@@ -325,10 +325,10 @@ void Count(){
 		refreshDegWithDMS(bhc);
 		bhc += gcj[i] - PI;
 	}
-	printRedToDMS("闭合差：",bhc);
+	printRedToDMS("角度闭合差=",bhc);
 	int baseNum[] = {0,0,40};
 	bhcyxz = DMSToRed(baseNum)*sqrt(sta-1);
-	printRedToDMS("闭合差允许值：±",bhcyxz);
+	printRedToDMS("闭合差允许值=±",bhcyxz);
 	if(bhc > bhcyxz){
 		cout << "角度闭合差超限！" << endl;
 		//return 0;
@@ -387,8 +387,19 @@ void Count(){
 		printXY("",zb[i]);
 	}
 
+	//输出文件
+	fp = fopen("out.txt", "w");
+	fprintf(fp, "角度闭合差=%lf\n", bhc);
+	if(bhc > bhcyxz){fprintf(fp, "角度闭合差超限！");}
+	fprintf(fp, "导线相对闭合差K=1/%lf\n", dxcd/Round2(Modulo(qcbhc)));
+	if(dxcd/Round2(Modulo(qcbhc)) < 2000){fprintf(fp, "相对闭合差超限！");}
 
-
+	fprintf(fp, "导线坐标：\n");
+	for(i=1;i<sta;i++){
+		fprintf(fp, "(%.2lf,%.2lf)\n", zb[i][0], zb[i][1]);
+	}
+	fclose(fp);
+	cout << "写入完毕，输出到out.txt" << endl << endl;
 }
 
 int main(){

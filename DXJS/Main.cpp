@@ -7,8 +7,13 @@
 #define PI 3.141592653589793238462643383279502884197169399375105820974944 
 
 //四舍五入到整数
-int Round(float num){
+int Round(double num){
 	return (int)(num>0 ? num+0.5: num-0.5);
+}
+
+//四舍五入到整数
+double Round2(double num){
+	return (double)Round(num*100)/100;
 }
 
 //输入度分秒
@@ -344,17 +349,38 @@ void Count(){
 	for(i=0;i<sta;i++){
 		printRedToDMS("",fwj[i]);
 	}
+
 	//计算导线全长闭合差
 	for(j=0;j<2;j++) qcbhc[j] = zb[1][j] - zb[sta-1][j];
 	cout << endl << "坐标增量：" << endl;
 	for(i=1;i<sta-1;i++){
 		ZBZS(zbzl[i], bc[i], fwj[i]);//计算坐标增量
-		cout << "(" << zbzl[i][0] << "," << zbzl[i][1] << ")" << endl;
+		for(j=0;j<2;j++) zbzl[i][j] = Round2(zbzl[i][j]);
+		printXY("",zbzl[i]);
 		for(j=0;j<2;j++) qcbhc[j] += zbzl[i][j];//计算闭合差
 	}
 	printXY("导线闭合差(fx,fy):", qcbhc);
 	cout << "导线全长闭合差f：" << Modulo(qcbhc) << endl;
 	
+	//进行坐标改正
+	cout << endl << "坐标增量改正：" << endl;
+	for(i=1;i<sta-1;i++){
+		for(j=0;j<2;j++) zbgz[i][j] = Round2(-qcbhc[j] * bc[i] / dxcd);
+		printXY("",zbgz[i]);
+		for(j=0;j<2;j++) gzzl[i][j] = zbzl[i][j] + zbgz[i][j];
+	}
+	cout << endl << "改正后坐标增量：" << endl;
+	for(i=1;i<sta-1;i++){
+		printXY("",gzzl[i]);
+	}
+	for(i=1;i<sta-1;i++){
+		for(j=0;j<2;j++) zb[i+1][j] = zb[i][j] + gzzl[i][j];
+	}
+	cout << endl << "坐标：" << endl;
+	for(i=1;i<sta;i++){
+		printXY("",zb[i]);
+	}
+
 
 
 }

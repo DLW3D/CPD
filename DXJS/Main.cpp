@@ -11,7 +11,7 @@ int Round(double num){
 	return (int)(num>0 ? num+0.5: num-0.5);
 }
 
-//四舍五入到整数
+//四舍五入到小数点后两位
 double Round2(double num){
 	return (double)Round(num*100)/100;
 }
@@ -215,15 +215,15 @@ void Count(){
 	int j;
 	int sta;//测站数(坐标数)max:10
 	int lor;//左角或右角
-	double gcj[10];//观测角
-	double jdgz[10];//角度改正值
-	double gzj[10];//改正后角度
-	double fwj[10];//方位角
-	double zb[11][2];//坐标
-	double zbzl[10][2];//坐标增量
-	double zbgz[10][2];//坐标改正
-	double gzzl[10][2];//改正后增量
-	double bc[10];//边长
+	double *gcj;//观测角
+	double *jdgz;//角度改正值
+	double *gzj;//改正后角度
+	double *fwj;//方位角
+	double (*zb)[2];//坐标
+	double (*zbzl)[2];//坐标增量
+	double (*zbgz)[2];//坐标改正
+	double (*gzzl)[2];//改正后增量
+	double *bc;//边长
 	
 	double dxcd = 0;//导线长度
 	double bhc;//角度闭合差
@@ -272,7 +272,19 @@ void Count(){
 
 	fgets(buff, 255, (FILE*)fp);
 	sta = atof(buff);
-	cout << "测站数:" << sta << endl; 
+	//fscanf(fp,"%d",&sta);
+	cout << "测站数:" << sta << endl;
+	
+	//根据测站数动态分配主要变量大小
+	gcj = (double*)calloc(sta, sizeof(double));
+	jdgz = (double*)calloc(sta, sizeof(double));
+	gzj = (double*)calloc(sta, sizeof(double));
+	fwj = (double*)calloc(sta, sizeof(double));
+	zb = new double[sta+1][2];
+	zbzl = new double[sta][2];
+	zbgz = new double[sta][2];
+	gzzl = new double[sta][2];
+	bc = (double*)calloc(sta, sizeof(double));
 
 	fgets(buff, 255, (FILE*)fp);
 	StrToReds(buff, " ", nbuf);
@@ -399,19 +411,12 @@ void Count(){
 		fprintf(fp, "(%.2lf,%.2lf)\n", zb[i][0], zb[i][1]);
 	}
 	fclose(fp);
-	cout << "写入完毕，输出到out.txt" << endl << endl;
+	cout << "写入完毕，已输出到out.txt" << endl << endl;
+	return;
 }
 
 int main(){
 	Count();
-	/*
-	int a1[3] = {50,32,0};
-	int a2[3] = {129,27,24};
-	double r1 = DMSToRed(a1);
-	double r2 = DMSToRed(a2);
-	double r3 = r1+r2-PI;
-	printRedToDMS("",r3);//should be -36
-	*/
-	  return 0;
+	return 0;
 }
 

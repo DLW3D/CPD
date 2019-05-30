@@ -136,7 +136,7 @@ void printRedToDMS(char word[], double red){
 	printDMS(word, angle);
 }
 
-//刷新使用角度刷新弧度
+//刷新使用角度刷新弧度,防止产生累积差
 void refreshDegWithDMS(double &red){
 	int angle[3];
 	RedToDMS(red, angle);
@@ -214,7 +214,7 @@ void Count(){
 	int i;
 	int j;
 	int sta;//测站数(坐标数)max:10
-	int lor;//左角或右角
+	//int lor;//左角或右角
 	double *gcj;//观测角
 	double *jdgz;//角度改正值
 	double *gzj;//改正后角度
@@ -271,7 +271,7 @@ void Count(){
 	fp = fopen("data.txt", "r");
 
 	fgets(buff, 255, (FILE*)fp);
-	sta = atof(buff);
+	sta = atof(buff) + 1;
 	//fscanf(fp,"%d",&sta);
 	cout << "测站数:" << sta << endl;
 	
